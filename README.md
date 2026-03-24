@@ -62,14 +62,14 @@ pip install websockets
 ### 1️⃣ Start Server
 
 ```bash
-python server.py
+python TVWebRTC.py
 ```
 
 You’ll see:
 
 ```
-Sender:   http://<your-ip>:8766/sender.html
-Receiver: http://<your-ip>:8766/receiver.html
+Sender:   http://<your-ip>:8766/sender-w.html
+Receiver: http://<your-ip>:8766/rt.html
 ```
 
 ---
@@ -79,7 +79,7 @@ Receiver: http://<your-ip>:8766/receiver.html
 Open in browser:
 
 ```
-http://<your-ip>:8766/sender.html
+http://<your-ip>:8766/sender-w.html
 ```
 
 Click:
