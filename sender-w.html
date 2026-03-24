@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>Screen Share</h2>
+<button onclick="start()">Start Sharing</button>
+
+<script>
+const ws = new WebSocket(`ws://${location.hostname}:8765`);
+let pc;
+
+ws.onopen = () => {
+  ws.send(JSON.stringify({ role: "sender" }));
+};
+
+async function start() {
+  const stream = await navigator.mediaDevices.getDisplayMedia({
+   video: {
+    width: { max: 1280 },
+    height: { max: 720 },
+    frameRate: { max: 15 }
+  },
+  audio: false
+  });
+
+  pc = new RTCPeerConnection({
+    iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
+  });
+
+  stream.getTracks().forEach(track => pc.addTrack(track, stream));
+
+  pc.onicecandidate = e => {
+    if (e.candidate) {
+      ws.send(JSON.stringify({
+        type: "ice",
+        candidate: e.candidate
+      }));
+    }
+  };
+
+  pc.onconnectionstatechange = () => {
+    console.log("STATE:", pc.connectionState);
+  };
+
+  ws.onmessage = async (msg) => {
+    const data = JSON.parse(msg.data);
+
+    if (data.type === "answer") {
+      await pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+    }
+
+    if (data.type === "ice") {
+      await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+    }
+  };
+
+  const offer = await pc.createOffer();
+  await pc.setLocalDescription(offer);
+
+  ws.send(JSON.stringify({
+    type: "offer",
+    sdp: offer
+  }));
+}
+</script>
+</body>
+</html>
