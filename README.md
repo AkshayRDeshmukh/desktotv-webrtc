@@ -37,9 +37,9 @@ Receiver (TV Browser)
 
 ```
 .
-├── server.py        # WebRTC signaling + HTTP server
-├── sender.html      # Screen sharing client (Mac/PC)
-└── receiver.html    # TV display client
+├── TVWebRTC.py        # WebRTC signaling + HTTP server
+├── sender-w.html      # Screen sharing client (Mac/PC)
+└── rt.html     # TV display client
 ```
 
 ---
